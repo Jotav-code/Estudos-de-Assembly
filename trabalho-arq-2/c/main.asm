@@ -282,7 +282,7 @@ main:
 	soma_fim:
     		li $v0, 0 #o nosso caso base e retorna 0 na soma
 	soma_retorno:
-    		lw $ra, 4($sp # recupera endereço de retorno
+    		lw $ra, 4($sp) # recupera endereço de retorno
     		addi $sp, $sp, 8 #liberando espaço da pilha
     		jr $ra #return
 
@@ -362,7 +362,7 @@ main:
     		la $a0, saldos #caregamos nosso vetor com os saldos                 
     		li $a1, 0 #Vai ser o nosso indice 0 i = 0              
     		move $a2, $s0  #nossa quantidade de clientes           
-    		lw $v0, 0($a0 # Inicializa maior com o primeiro elemento
+    		lw $v0, 0($a0) # Inicializa maior com o primeiro elemento
     		jal maior_saldo_rec  #chamamos a função recursiva      
     		move $s3, $v0# salvando maior saldo             
     
@@ -383,7 +383,7 @@ main:
     		la $a0, saldos #caregamos nosso vetor com os saldos      
     		li $a1, 0       #Vai ser o nosso indice 0 i = 0          
     		move $a2, $s0 #nossa quantidade de clientes             
-    		lw $v0, 0($a0 # Inicializa menor com o primeiro elemento
+    		lw $v0, 0($a0) # Inicializa menor com o primeiro elemento
     		jal menor_saldo_rec #chamamos a função recursiva      
     		move $s4, $v0 # salvando menor saldo       
     
