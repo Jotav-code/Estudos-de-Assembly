@@ -258,19 +258,19 @@ main:
     
     		addi $sp,$sp, -8 #Abrindo espaço na pilha para 2 itens
     		sw $ra, 4($sp)# Salvando endereço de retorno
-    		sw $t1, 0($sp) #Salvando t1 (saldo atual) na pilha!!!
+    		sw $t1, 0($sp) # salvando o valor temporario na pilha para nao perder
     
-    		beq  $a1, $a2, soma_fim # Aqui vai ser nossa Base da recursão
+    		beq  $a1, $a2, soma_fim #Aqui vai ser nossa Base da recursão
     
-    		mul $t0, $a1, 4 # Calculando endereço
-    		add $t0, $t0, $a0 
-    		lw $t1, 0($t0) # Carrega valor atual em $t1
+    		mul $t0, $a1, 4 #multiplicando nosso indice por 4, pois nosso vetor é composto por int de 4 byttes
+    		add $t0, $t0, $a0 #somando com endereço base do vetor
+    		lw $t1, 0($t0) # carregando valor do vetor do indice atual
     
     		# Precisamos atualizar a pilha com o valor lido de $t1 antes de chamar a recursão
-    		sw $t1, 0($sp)            
+    		sw $t1, 0($sp) # garanto que o t1 atual fique salvo na pilha           
     
     		addi $a1, $a1, 1 #Incrementa 1 no índice
-    		jal soma_saldos_rec # Chama recursão
+    		jal soma_saldos_rec # Chamamos nossa função recursiva
     
 		# Ao voltar, t1 estaria com lixo, então recuperamos ele da pilha
     		lw   $t1, 0($sp) # entao vamos recuperar o valor original de t1
@@ -282,121 +282,121 @@ main:
 	soma_fim:
     		li $v0, 0 #o nosso caso base e retorna 0 na soma
 	soma_retorno:
-    		lw $ra, 4($sp # Recupera endereço de retorno
-    		addi $sp, $sp, 8 # Fecha a pilha
-    		jr $ra # Retorna
+    		lw $ra, 4($sp # recupera endereço de retorno
+    		addi $sp, $sp, 8 #liberando espaço da pilha
+    		jr $ra #return
 
 
 	maior_saldo_rec:
-    		addi $sp, $sp, -8
-    		sw $ra, 4($sp)
+    		addi $sp, $sp, -8 #abrindo espaço na pilha
+    		sw $ra, 4($sp)#salvando endereço de retorno
     
-    		beq  $a1, $a2, maior_fim    # Se índice == tamanho, retorna
+    		beq  $a1, $a2, maior_fim #Aqui vai ser nossa Base da recursão
     
-    		mul $t0, $a1, 4
-    		add $t0, $t0, $a0
-    		lw $t1, 0($t0) # Lemos o valor atual
+    		mul $t0, $a1, 4 #multiplicando nosso indice por 4, pois nosso vetor é composto por int de 4 byttes
+    		add $t0, $t0, $a0 #somando com endereço base do vetor
+    		lw $t1, 0($t0) # carregando valor do vetor do indice atual em t1
     
-    		slt $t2, $v0, $t1 #Se MaiorAtual v0 < Novo t1
-    		beq $t2, $zero, maior_skip # Se não for menor, pula
-    		move $v0, $t1 #Atualiza o maior
+    		slt $t2, $v0, $t1 #Se maior atual v0 < Novo t1
+    		beq $t2, $zero, maior_skip # Se não for menor ele pula
+    		move $v0, $t1 #atualiza o maior
     
 	maior_skip:
-    		addi $a1, $a1, 1
-    		jal  maior_saldo_rec # Chamamos a Recursão
+    		addi $a1, $a1, 1 #incrementando +1
+    		jal  maior_saldo_rec #Chamamos nossa função recursiva
     
 	maior_fim:
-    		lw $ra, 4($sp)
-    		addi $sp, $sp, 8
-    		jr $ra
+    		lw $ra, 4($sp) #recuperando endereço de retorno
+    		addi $sp, $sp, 8#liberando espaço da pilha
+    		jr $ra #return
 
 
 	menor_saldo_rec:
-    		addi $sp, $sp, -8
-    		sw $ra, 4($sp)
+    		addi $sp, $sp, -8 #abrindo espaço na pilha
+    		sw $ra, 4($sp)#salvando endereço de retorno
     
-    		beq $a1, $a2, menor_fim
+    		beq $a1, $a2, menor_fim #nosso caso base
     
-    		mul $t0, $a1, 4
-    		add $t0, $t0, $a0
-    		lw $t1, 0($t0)
+    		mul $t0, $a1, 4 #multiplicando nosso indice por 4, pois nosso vetor é composto por int de 4 byttes
+    		add $t0, $t0, $a0 #somando com endereço base do vetor
+    		lw $t1, 0($t0) #carregando valor do vetor do indice atual em t1
     
-    		slt $t2, $t1, $v0          # Se Novo ($t1) < MenorAtual ($v0)
-    		beq $t2, $zero, menor_skip
-    		move $v0, $t1               # Atualiza o menor
+    		slt $t2, $t1, $v0 # verifica se valor atual é menor que o menor armazenado
+    		beq $t2, $zero, menor_skip # se não for menor, pula atualização
+    		move $v0, $t1 # atualiza menor valor
     
 	menor_skip:
-    		addi $a1, $a1, 1
-    		jal  menor_saldo_rec
+    		addi $a1, $a1, 1 #incrementando +1
+    		jal  menor_saldo_rec #chamamos nossa função recursiva
     
 	menor_fim:
-    		lw $ra, 4($sp)
-    		addi $sp, $sp, 8
-    		jr   $ra
+    		lw $ra, 4($sp)# recuperando endereço de retorno
+    		addi $sp, $sp, 8# liberando espaço da pilha
+    		jr   $ra #return
 
 	
         estatistica:
     
     		# -------- Total no banco --------
-    		la $a0, saldos          
-    		li $a1, 0               
-    		move $a2, $s0             
-    		li $v0, 0               # Zera acumulador
-    		jal soma_saldos_rec      
-    		move $s2, $v0             
+    		la $a0, saldos   #caregamos nosso vetor com os saldos       
+    		li $a1, 0 #Vai ser o nosso indice 0 i = 0
+    		move $a2, $s0 #nossa quantidade de clientes
+    		li $v0, 0 #inicializando acumulador da soma
+    		jal soma_saldos_rec  #chamamos a função recursiva     
+    		move $s2, $v0#salvando total do banco            
     
-    		la $a0, msg_total_no_banco
-    		li $v0, 4
+    		la $a0, msg_total_no_banco #imprimindo mensagem otal no banco
+    		li $v0, 4 #nesse trecho faço o carregamento da minha string para imprimir
     		syscall
     
-    		move $a0, $s2             # Imprime o número
-    		li $v0, 1
+    		move $a0, $s2 # carregando total para impressão
+    		li $v0, 1 # procedimento para imprimir inteiro
     		syscall
     
     		#Pular linha após o número
-    		li  $a0, 10              # Código ASCII para \n
-    		li $v0, 11              # Syscall para imprimir caractere
+    		li  $a0, 10 #carregando o caractere de nova linha \n em ASCII
+    		li $v0, 11              
     		syscall
     
     		# -------- Maior saldo --------
-    		la $a0, saldos          
-    		li $a1, 0               
-    		move $a2, $s0             
-    		lw $v0, 0($a0)          # Inicializa maior com o primeiro elemento
-    		jal maior_saldo_rec      
-    		move $s3, $v0             
+    		la $a0, saldos #caregamos nosso vetor com os saldos                 
+    		li $a1, 0 #Vai ser o nosso indice 0 i = 0              
+    		move $a2, $s0  #nossa quantidade de clientes           
+    		lw $v0, 0($a0 # Inicializa maior com o primeiro elemento
+    		jal maior_saldo_rec  #chamamos a função recursiva      
+    		move $s3, $v0# salvando maior saldo             
     
-    		la $a0, msg_maior_saldo
-    		li $v0, 4
-    		syscall
+    		la $a0, msg_maior_saldo #imprimindo mensagem maior saldo
+    		li $v0, 4 # procedimento para imprimir string
+    		syscall# nesse trecho faço o carregamento da minha string para imprimir
     
-    		move $a0, $s3# Imprime o número
-    		li $v0, 1
+    		move $a0, $s3 #carregando maior saldo para impressão
+    		li $v0, 1 #procedimento para imprimir inteiro
     		syscall
 
     
-    		li $a0, 10
+    		li $a0, 10 #carregando o caractere de nova linha \n em ASCII
     		li $v0, 11
     		syscall
     
     		# -------- Menor saldo --------
-    		la $a0, saldos          
-    		li $a1, 0               
-    		move $a2, $s0             
-    		lw $v0, 0($a0)          # Inicializa menor com o primeiro elemento
-    		jal menor_saldo_rec      
-    		move $s4, $v0             
+    		la $a0, saldos #caregamos nosso vetor com os saldos      
+    		li $a1, 0       #Vai ser o nosso indice 0 i = 0          
+    		move $a2, $s0 #nossa quantidade de clientes             
+    		lw $v0, 0($a0 # Inicializa menor com o primeiro elemento
+    		jal menor_saldo_rec #chamamos a função recursiva      
+    		move $s4, $v0 # salvando menor saldo       
     
-    		la $a0, msg_menor_saldo
-    		li $v0, 4
-    		syscall
+    		la $a0, msg_menor_saldo # imprimindo mensagem menor saldo
+    		li $v0, 4#procedimento para imprimir string
+    		syscall # nesse trecho faço o carregamento da minha string para imprimir
     
-    		move $a0, $s4 # Imprime o número
-    		li $v0, 1
+    		move $a0, $s4 # carregando menor saldo para impressão
+    		li $v0, 1 # procedimento para imprimir inteiro
     		syscall
     
     		
-    		li $a0, 10
+    		li $a0, 10# carregando o caractere de nova linha \n em ASCII
     		li $v0, 11
     		syscall
     
