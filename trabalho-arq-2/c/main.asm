@@ -8,7 +8,7 @@ msg_saque_realizado: .asciiz "Saque realizado \n"
 
 msg_deposito_realizado: .asciiz "Deposito realizado \n"
 
-msg_cliente_nao_existe: .asciiz "Cliente não existe \n "
+msg_cliente_nao_existe: .asciiz "Cliente nÃ£o existe \n "
 
 msg_do_painel: .asciiz "\n1-Depositar  2-Sacar  3-Estatisticas  4-Sair\n"
 
@@ -26,35 +26,35 @@ msg_menor_saldo: .asciiz "Menor saldo: \n"
 
 msg_dois_pontos: .asciiz ": "
 
-.align 2 #alinhe o próximo dado em 2² bytes = 4 bytes
+.align 2 #alinhe o prÃ³ximo dado em 2Â² bytes = 4 bytes
 saldos: .space 400    # criando meu vetor de inteiros com capacidade maxima de 100 clientes 100 inteiros * 4 bytes
 
 .text
 
 main:
 	
-	la $s1 , saldos # Faço o carregamento do endereço de memoria do meu vetor
+	la $s1 , saldos # FaÃ§o o carregamento do endereÃ§o de memoria do meu vetor
 	
-	la  $a0, msg_quantidade_de_clientes #carrego o endereço da minha string
+	la  $a0, msg_quantidade_de_clientes #carrego o endereÃ§o da minha string
 	li  $v0, 4
-	syscall # Nesse trecho faço o carregamento da minha string para imprimir
+	syscall # Nesse trecho faÃ§o o carregamento da minha string para imprimir
 	
-	# lê inteiro a quantidade de clientes
+	# lÃª inteiro a quantidade de clientes
 	li  $v0, 5
 	syscall
 	# salva o valor lido em S0
 	move $s0, $v0
 	
-	li $t0, 0 # t0 vai ser o meu iniciador do loop para cadastrar os usuários como se fosse
+	li $t0, 0 # t0 vai ser o meu iniciador do loop para cadastrar os usuÃ¡rios como se fosse
 		  # o meu int i = 0 em c
 	
 	loop:
-		beq $t0 , $s0, fim # aqui temos uma condição para o loop se t0 for = a $s0, pulamos para o fim
+		beq $t0 , $s0, fim # aqui temos uma condiÃ§Ã£o para o loop se t0 for = a $s0, pulamos para o fim
 		
 		#--------------------
-		la $a0, msg_saldo_inicial_do_cliente #carrego o endereço da minha string
+		la $a0, msg_saldo_inicial_do_cliente #carrego o endereÃ§o da minha string
 		li $v0 , 4
-		syscall # Nesse trecho faço o carregamento da minha string para imprimir
+		syscall # Nesse trecho faÃ§o o carregamento da minha string para imprimir
 		#--------------------
 		
 		#----------------
@@ -79,17 +79,17 @@ main:
 		add $t1, $t0, $zero 
 		# carregando nosso i no registrador para usar para acessar nosso vetor
 		mul $t1, $t1, 4
-		#multiplicando nosso indice por 4, pois nosso vetor é composto por int de 4 byttes
+		#multiplicando nosso indice por 4, pois nosso vetor Ã© composto por int de 4 byttes
 		add $t1, $t1, $s1
-		#somando com o endereço para acessar a posição no vetor
+		#somando com o endereÃ§o para acessar a posiÃ§Ã£o no vetor
 		
 		#-----------------
 		
-		sw  $v0, 0($t1) # jogo o valor no vetor na posição i do nosso t0
+		sw  $v0, 0($t1) # jogo o valor no vetor na posiÃ§Ã£o i do nosso t0
 		
 		addi $t0, $t0, 1 #adiciono 1 no nosso i
 		
-		j loop # Aqui fazemos o programa voltar para o loop, quando ainda não terminou
+		j loop # Aqui fazemos o programa voltar para o loop, quando ainda nÃ£o terminou
 		
 		fim: # encerrando o loop
 	
@@ -115,14 +115,14 @@ main:
 	
 	#---------
 	
-	li $v0, 5 #lendo a opção do usuario
+	li $v0, 5 #lendo a opÃ§Ã£o do usuario
 	syscall
 	
 	move $t0, $v0 #movendo o para t0
 		
 	#---------
 	
-	beq $t0, 4, sair #se o usuario digitou 4, ele quer sair da aplicação
+	beq $t0, 4, sair #se o usuario digitou 4, ele quer sair da aplicaÃ§Ã£o
 	
 	beq $t0, 1, depositar
 	
@@ -148,7 +148,7 @@ main:
 		
 		#validando cliente cliente: if (i < 0 || i >= n)
 		slt  $t3, $t1, $zero   # t0 = 1 se i < 0
-   		bne  $t3, $zero, cliente_invalido # se t3 Não for igual a 0 então é verdade, ou seja, cliente invalido
+   		bne  $t3, $zero, cliente_invalido # se t3 NÃ£o for igual a 0 entÃ£o Ã© verdade, ou seja, cliente invalido
 
     		slt  $t3, $t1, $s0    # t0 = 1 se i < n
     		beq  $t3, $zero, cliente_invalido
@@ -166,8 +166,8 @@ main:
 		syscall 
 		move $t2, $v0 #movendo o para t2
 		
-		mul $t1 , $t1 , 4 #multiplicando nosso indice por 4, pois nosso vetor é composto por int de 4 byttes
-		add $t1 , $t1 , $s1 # somando o valor multiplicado com o endereço de memoria do vetor para acessar a posição
+		mul $t1 , $t1 , 4 #multiplicando nosso indice por 4, pois nosso vetor Ã© composto por int de 4 byttes
+		add $t1 , $t1 , $s1 # somando o valor multiplicado com o endereÃ§o de memoria do vetor para acessar a posiÃ§Ã£o
 		lw $t4 , 0($t1) #carregamos o valor do cliente em t4
 		add $t4, $t4, $t2 # fazemos o deposito
 		sw $t4, 0($t1) # devolvemos o valor para o vetor
@@ -204,7 +204,7 @@ main:
 		
 		#validando cliente cliente: if (i < 0 || i >= n)
 		slt  $t3, $t1, $zero   # t0 = 1 se i < 0
-   		bne  $t3, $zero, cliente_invalido_saque # se t3 Não for igual a 0 então é verdade, ou seja, cliente invalido
+   		bne  $t3, $zero, cliente_invalido_saque # se t3 NÃ£o for igual a 0 entÃ£o Ã© verdade, ou seja, cliente invalido
 
     		slt  $t3, $t1, $s0    # t0 = 1 se i < n
     		beq  $t3, $zero, cliente_invalido_saque
@@ -222,12 +222,12 @@ main:
 		syscall 
 		move $t2, $v0 #movendo o para t2
 		
-		mul $t1 , $t1 , 4 #multiplicando nosso indice por 4, pois nosso vetor é composto por int de 4 byttes
-		add $t1 , $t1 , $s1 # somando o valor multiplicado com o endereço de memoria do vetor para acessar a posição
+		mul $t1 , $t1 , 4 #multiplicando nosso indice por 4, pois nosso vetor Ã© composto por int de 4 byttes
+		add $t1 , $t1 , $s1 # somando o valor multiplicado com o endereÃ§o de memoria do vetor para acessar a posiÃ§Ã£o
 		lw $t4 , 0($t1) #carregamos o valor do cliente em t4
 		
 		slt  $t5, $t4, $t2   # t5 = t2 < t4 ou seja se o valor digitado for menor que o da conta
-   		bne  $t5, $zero, saldo_insuficiente # se não for igual a 0, então é verdade e o valor é menor
+   		bne  $t5, $zero, saldo_insuficiente # se nÃ£o for igual a 0, entÃ£o Ã© verdade e o valor Ã© menor
 		
 		sub $t4, $t4, $t2 # fazemos o deposito
 		sw $t4, 0($t1) # devolvemos o valor para o vetor
@@ -253,164 +253,154 @@ main:
 			
 			j painel
 		
-		
-#--------------------------	
-#--------------------------	
-soma_saldos_rec:
+			
+	soma_saldos_rec:
     
-    addi $sp, $sp, -8           # Abrindo espaço na pilha para 2 itens
-    sw   $ra, 4($sp)            # Salvando endereço de retorno
-    sw   $t1, 0($sp)            # [CORREÇÃO] Salvando $t1 (saldo atual) na pilha!
+    		addi $sp,$sp, -8 #Abrindo espaÃ§o na pilha para 2 itens
+    		sw $ra, 4($sp)# Salvando endereÃ§o de retorno
+    		sw $t1, 0($sp) #Salvando t1 (saldo atual) na pilha!!!
     
-    beq  $a1, $a2, soma_fim     # Base da recursão
+    		beq  $a1, $a2, soma_fim # Aqui vai ser nossa Base da recursÃ£o
     
-    mul  $t0, $a1, 4            # Calculando endereço
-    add  $t0, $t0, $a0
-    lw   $t1, 0($t0)            # Carrega valor atual em $t1
+    		mul $t0, $a1, 4 # Calculando endereÃ§o
+    		add $t0, $t0, $a0 
+    		lw $t1, 0($t0) # Carrega valor atual em $t1
     
-    # Precisamos atualizar a pilha com o valor lido de $t1 antes de chamar a recursão
-    sw   $t1, 0($sp)            
+    		# Precisamos atualizar a pilha com o valor lido de $t1 antes de chamar a recursÃ£o
+    		sw $t1, 0($sp)            
     
-    addi $a1, $a1, 1            # Incrementa índice
-    jal  soma_saldos_rec        # Chama recursão
+    		addi $a1, $a1, 1 #Incrementa 1 no Ã­ndice
+    		jal soma_saldos_rec # Chama recursÃ£o
     
-    # Ao voltar, $t1 estaria 'sujo', então recuperamos ele da pilha
-    lw   $t1, 0($sp)            # [CORREÇÃO] Recupera o valor original de $t1
-    add  $v0, $v0, $t1          # Soma: Resultado da filha ($v0) + Atual ($t1)
+		# Ao voltar, t1 estaria com lixo, entÃ£o recuperamos ele da pilha
+    		lw   $t1, 0($sp) # entao vamos recuperar o valor original de t1
+    		add  $v0, $v0, $t1 #Soma: Resultado da filha v0 + Atual t1
     
-    # Pula para o fim (para não executar o return base que zera o v0)
-    j soma_retorno
+    	#Pula para o fim para nÃ£o executar o return base que zera o v0
+    	j soma_retorno
 
-soma_fim:
-    li   $v0, 0                 # Caso base retorna 0 na soma
+	soma_fim:
+    		li $v0, 0 #o nosso caso base e retorna 0 na soma
+	soma_retorno:
+    		lw $ra, 4($sp # Recupera endereÃ§o de retorno
+    		addi $sp, $sp, 8 # Fecha a pilha
+    		jr $ra # Retorna
 
-soma_retorno:
-    lw   $ra, 4($sp)            # Recupera endereço de retorno
-    addi $sp, $sp, 8            # Fecha a pilha
-    jr   $ra                    # Retorna
 
-#-----------------------
-# As funções Maior e Menor estavam logicamente corretas (Tail Recursion), 
-# mas vamos garantir que elas não usem registradores sujos.
-# Nelas, o cálculo é feito ANTES do jal, então o problema do $t1 não afeta tanto,
-# mas mantive a estrutura limpa abaixo.
+	maior_saldo_rec:
+    		addi $sp, $sp, -8
+    		sw $ra, 4($sp)
+    
+    		beq  $a1, $a2, maior_fim    # Se Ã­ndice == tamanho, retorna
+    
+    		mul $t0, $a1, 4
+    		add $t0, $t0, $a0
+    		lw $t1, 0($t0) # Lemos o valor atual
+    
+    		slt $t2, $v0, $t1 #Se MaiorAtual v0 < Novo t1
+    		beq $t2, $zero, maior_skip # Se nÃ£o for menor, pula
+    		move $v0, $t1 #Atualiza o maior
+    
+	maior_skip:
+    		addi $a1, $a1, 1
+    		jal  maior_saldo_rec # Chamamos a RecursÃ£o
+    
+	maior_fim:
+    		lw $ra, 4($sp)
+    		addi $sp, $sp, 8
+    		jr $ra
 
-maior_saldo_rec:
-    addi $sp, $sp, -8
-    sw   $ra, 4($sp)
-    
-    beq  $a1, $a2, maior_fim    # Se índice == tamanho, retorna
-    
-    mul  $t0, $a1, 4
-    add  $t0, $t0, $a0
-    lw   $t1, 0($t0)            # Lê valor atual
-    
-    slt  $t2, $v0, $t1          # Se MaiorAtual ($v0) < Novo ($t1)
-    beq  $t2, $zero, maior_skip # Se não for menor, pula
-    move $v0, $t1               # Atualiza o maior
-    
-maior_skip:
-    addi $a1, $a1, 1
-    jal  maior_saldo_rec        # Recursão
-    
-maior_fim:
-    lw   $ra, 4($sp)
-    addi $sp, $sp, 8
-    jr   $ra
 
-#--------------------
-menor_saldo_rec:
-    addi $sp, $sp, -8
-    sw   $ra, 4($sp)
+	menor_saldo_rec:
+    		addi $sp, $sp, -8
+    		sw $ra, 4($sp)
     
-    beq  $a1, $a2, menor_fim
+    		beq $a1, $a2, menor_fim
     
-    mul  $t0, $a1, 4
-    add  $t0, $t0, $a0
-    lw   $t1, 0($t0)
+    		mul $t0, $a1, 4
+    		add $t0, $t0, $a0
+    		lw $t1, 0($t0)
     
-    slt  $t2, $t1, $v0          # Se Novo ($t1) < MenorAtual ($v0)
-    beq  $t2, $zero, menor_skip
-    move $v0, $t1               # Atualiza o menor
+    		slt $t2, $t1, $v0          # Se Novo ($t1) < MenorAtual ($v0)
+    		beq $t2, $zero, menor_skip
+    		move $v0, $t1               # Atualiza o menor
     
-menor_skip:
-    addi $a1, $a1, 1
-    jal  menor_saldo_rec
+	menor_skip:
+    		addi $a1, $a1, 1
+    		jal  menor_saldo_rec
     
-menor_fim:
-    lw   $ra, 4($sp)
-    addi $sp, $sp, 8
-    jr   $ra
+	menor_fim:
+    		lw $ra, 4($sp)
+    		addi $sp, $sp, 8
+    		jr   $ra
 
-	#------------------------------------
-    
-        # -------- Total no banco --------
+	
         estatistica:
     
-    # -------- Total no banco --------
-    la   $a0, saldos          
-    li   $a1, 0               
-    move $a2, $s0             
-    li   $v0, 0               # Zera acumulador
-    jal  soma_saldos_rec      
-    move $s2, $v0             
+    		# -------- Total no banco --------
+    		la $a0, saldos          
+    		li $a1, 0               
+    		move $a2, $s0             
+    		li $v0, 0               # Zera acumulador
+    		jal soma_saldos_rec      
+    		move $s2, $v0             
     
-    la   $a0, msg_total_no_banco
-    li   $v0, 4
-    syscall
+    		la $a0, msg_total_no_banco
+    		li $v0, 4
+    		syscall
     
-    move $a0, $s2             # Imprime o número
-    li   $v0, 1
-    syscall
+    		move $a0, $s2             # Imprime o nÃºmero
+    		li $v0, 1
+    		syscall
     
-    # [CORREÇÃO] Pular linha após o número
-    li   $a0, 10              # Código ASCII para \n
-    li   $v0, 11              # Syscall para imprimir caractere
-    syscall
+    		#Pular linha apÃ³s o nÃºmero
+    		li  $a0, 10              # CÃ³digo ASCII para \n
+    		li $v0, 11              # Syscall para imprimir caractere
+    		syscall
     
-    # -------- Maior saldo --------
-    la   $a0, saldos          
-    li   $a1, 0               
-    move $a2, $s0             
-    lw   $v0, 0($a0)          # Inicializa maior com o primeiro elemento
-    jal  maior_saldo_rec      
-    move $s3, $v0             
+    		# -------- Maior saldo --------
+    		la $a0, saldos          
+    		li $a1, 0               
+    		move $a2, $s0             
+    		lw $v0, 0($a0)          # Inicializa maior com o primeiro elemento
+    		jal maior_saldo_rec      
+    		move $s3, $v0             
     
-    la   $a0, msg_maior_saldo
-    li   $v0, 4
-    syscall
+    		la $a0, msg_maior_saldo
+    		li $v0, 4
+    		syscall
     
-    move $a0, $s3             # Imprime o número
-    li   $v0, 1
-    syscall
+    		move $a0, $s3# Imprime o nÃºmero
+    		li $v0, 1
+    		syscall
 
-    # [CORREÇÃO] Pular linha
-    li   $a0, 10
-    li   $v0, 11
-    syscall
     
-    # -------- Menor saldo --------
-    la   $a0, saldos          
-    li   $a1, 0               
-    move $a2, $s0             
-    lw   $v0, 0($a0)          # Inicializa menor com o primeiro elemento
-    jal  menor_saldo_rec      
-    move $s4, $v0             
+    		li $a0, 10
+    		li $v0, 11
+    		syscall
     
-    la   $a0, msg_menor_saldo
-    li   $v0, 4
-    syscall
+    		# -------- Menor saldo --------
+    		la $a0, saldos          
+    		li $a1, 0               
+    		move $a2, $s0             
+    		lw $v0, 0($a0)          # Inicializa menor com o primeiro elemento
+    		jal menor_saldo_rec      
+    		move $s4, $v0             
     
-    move $a0, $s4             # Imprime o número
-    li   $v0, 1
-    syscall
+    		la $a0, msg_menor_saldo
+    		li $v0, 4
+    		syscall
     
-    # [CORREÇÃO] Pular linha (opcional aqui, mas fica bonito)
-    li   $a0, 10
-    li   $v0, 11
-    syscall
+    		move $a0, $s4 # Imprime o nÃºmero
+    		li $v0, 1
+    		syscall
     
-    j painel
+    		
+    		li $a0, 10
+    		li $v0, 11
+    		syscall
+    
+    	j painel
 
 	sair:
 	
